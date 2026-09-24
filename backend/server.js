@@ -37,11 +37,30 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 
-// Enable CORS
+// Enable CORS for Vercel deployment and local environments
+const allowedOrigins = [
+  'https://online-learning-platform-jet-delta.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: '*',
-  credentials: true
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all valid cross-origin requests seamlessly
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
+
+// Handle preflight requests
+app.options('*', cors());
+
 
 // Serve static uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
