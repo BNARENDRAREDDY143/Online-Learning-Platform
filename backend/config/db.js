@@ -6,8 +6,10 @@ const connectDB = async () => {
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`❌ MongoDB Connection Error: ${error.message}`);
+    console.error('👉 TIP: Ensure your MongoDB Atlas IP Access List allows access from anywhere (0.0.0.0/0).');
     process.exit(1);
   }
 };
 
 module.exports = connectDB;
+
